@@ -25,8 +25,30 @@ app.use(
     },
   }),
 );
-app.use(cors());
-app.use(express.json());
+const allowedOrigins = new Set([
+  "http://localhost",
+  "http://localhost:80",
+  "http://127.0.0.1",
+  ...(process.env.REPLIT_DOMAINS ?? "")
+    .split(",")
+    .map((d) => d.trim())
+    .filter(Boolean)
+    .flatMap((d) => [`https://${d}`, `http://${d}`]),
+]);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.has(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS: origin '${origin}' not allowed`));
+      }
+    },
+    credentials: true,
+  }),
+);
+app.use(express.json({ limit: "100kb" }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
