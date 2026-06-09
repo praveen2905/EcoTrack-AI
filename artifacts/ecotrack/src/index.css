@@ -291,3 +291,40 @@
     inset: -1px;
   }
 }
+
+@layer base {
+  /* Respect user's reduced-motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Enhanced focus-visible ring */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* Remove default focus ring for mouse/touch */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* High-contrast mode support */
+  @media (prefers-contrast: more) {
+    :root {
+      --border: 0 0% 20%;
+      --ring: 142 80% 30%;
+    }
+    .dark {
+      --border: 0 0% 80%;
+      --ring: 142 80% 70%;
+    }
+  }
+}
