@@ -1,15 +1,28 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: EcoTrack AI API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: assessments
+    description: Carbon footprint assessments
+  - name: dashboard
+    description: Dashboard summaries and analytics
+  - name: challenges
+    description: Weekly eco challenges
+  - name: leaderboard
+    description: Community leaderboard
+  - name: profile
+    description: User profile and gamification
+  - name: recommendations
+    description: AI-powered sustainability recommendations
+  - name: tips
+    description: Daily eco tips
 paths:
   /healthz:
     get:
@@ -24,6 +37,193 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /assessments:
+    get:
+      operationId: listAssessments
+      tags: [assessments]
+      summary: List all assessments
+      responses:
+        "200":
+          description: List of assessments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Assessment"
+    post:
+      operationId: createAssessment
+      tags: [assessments]
+      summary: Submit a carbon footprint assessment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssessmentInput"
+      responses:
+        "201":
+          description: Created assessment with results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Assessment"
+
+  /assessments/{id}:
+    get:
+      operationId: getAssessment
+      tags: [assessments]
+      summary: Get a specific assessment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Assessment detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Assessment"
+        "404":
+          description: Not found
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get aggregated dashboard stats
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/weekly-progress:
+    get:
+      operationId: getWeeklyProgress
+      tags: [dashboard]
+      summary: Get weekly carbon reduction data for line chart
+      responses:
+        "200":
+          description: Weekly progress data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WeeklyDataPoint"
+
+  /dashboard/monthly-progress:
+    get:
+      operationId: getMonthlyProgress
+      tags: [dashboard]
+      summary: Get monthly emissions data for bar chart
+      responses:
+        "200":
+          description: Monthly progress data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MonthlyDataPoint"
+
+  /challenges:
+    get:
+      operationId: listChallenges
+      tags: [challenges]
+      summary: List weekly challenges
+      responses:
+        "200":
+          description: List of challenges
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Challenge"
+
+  /challenges/{id}/complete:
+    patch:
+      operationId: completeChallenge
+      tags: [challenges]
+      summary: Mark a challenge as complete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Updated challenge
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Challenge"
+
+  /leaderboard:
+    get:
+      operationId: getLeaderboard
+      tags: [leaderboard]
+      summary: Get community leaderboard
+      responses:
+        "200":
+          description: Leaderboard entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LeaderboardEntry"
+
+  /profile:
+    get:
+      operationId: getProfile
+      tags: [profile]
+      summary: Get current user profile with gamification data
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+
+  /recommendations:
+    get:
+      operationId: getRecommendations
+      tags: [recommendations]
+      summary: Get AI-powered sustainability recommendations
+      responses:
+        "200":
+          description: List of recommendations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Recommendation"
+
+  /tips/daily:
+    get:
+      operationId: getDailyTip
+      tags: [tips]
+      summary: Get today's eco tip
+      responses:
+        "200":
+          description: Daily eco tip
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EcoTip"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +234,322 @@ components:
       required:
         - status
 
+    AssessmentInput:
+      type: object
+      required:
+        - transportKm
+        - usesPublicTransport
+        - flightsPerYear
+        - acHoursPerDay
+        - fanHoursPerDay
+        - monthlyElectricityBill
+        - isVegetarian
+        - foodDeliveryPerWeek
+        - onlineOrdersPerMonth
+      properties:
+        transportKm:
+          type: number
+        usesPublicTransport:
+          type: boolean
+        flightsPerYear:
+          type: integer
+        acHoursPerDay:
+          type: number
+        fanHoursPerDay:
+          type: number
+        monthlyElectricityBill:
+          type: number
+        isVegetarian:
+          type: boolean
+        foodDeliveryPerWeek:
+          type: integer
+        onlineOrdersPerMonth:
+          type: integer
+
+    Assessment:
+      type: object
+      required:
+        - id
+        - createdAt
+        - transportKm
+        - usesPublicTransport
+        - flightsPerYear
+        - acHoursPerDay
+        - fanHoursPerDay
+        - monthlyElectricityBill
+        - isVegetarian
+        - foodDeliveryPerWeek
+        - onlineOrdersPerMonth
+        - transportEmissions
+        - electricityEmissions
+        - foodEmissions
+        - shoppingEmissions
+        - totalEmissions
+        - carbonScore
+      properties:
+        id:
+          type: integer
+        createdAt:
+          type: string
+        transportKm:
+          type: number
+        usesPublicTransport:
+          type: boolean
+        flightsPerYear:
+          type: integer
+        acHoursPerDay:
+          type: number
+        fanHoursPerDay:
+          type: number
+        monthlyElectricityBill:
+          type: number
+        isVegetarian:
+          type: boolean
+        foodDeliveryPerWeek:
+          type: integer
+        onlineOrdersPerMonth:
+          type: integer
+        transportEmissions:
+          type: number
+        electricityEmissions:
+          type: number
+        foodEmissions:
+          type: number
+        shoppingEmissions:
+          type: number
+        totalEmissions:
+          type: number
+        carbonScore:
+          type: integer
+
+    DashboardSummary:
+      type: object
+      required:
+        - totalEmissionsThisMonth
+        - percentageChangeFromLastMonth
+        - carbonScore
+        - challengesCompleted
+        - totalPoints
+        - streak
+        - averageUserEmissions
+        - treesEquivalent
+        - categoryBreakdown
+      properties:
+        totalEmissionsThisMonth:
+          type: number
+        percentageChangeFromLastMonth:
+          type: number
+        carbonScore:
+          type: integer
+        challengesCompleted:
+          type: integer
+        totalPoints:
+          type: integer
+        streak:
+          type: integer
+        averageUserEmissions:
+          type: number
+        treesEquivalent:
+          type: number
+        categoryBreakdown:
+          $ref: "#/components/schemas/CategoryBreakdown"
+
+    CategoryBreakdown:
+      type: object
+      required:
+        - transport
+        - electricity
+        - food
+        - shopping
+      properties:
+        transport:
+          type: number
+        electricity:
+          type: number
+        food:
+          type: number
+        shopping:
+          type: number
+
+    WeeklyDataPoint:
+      type: object
+      required:
+        - day
+        - emissions
+        - target
+      properties:
+        day:
+          type: string
+        emissions:
+          type: number
+        target:
+          type: number
+
+    MonthlyDataPoint:
+      type: object
+      required:
+        - month
+        - emissions
+        - previousYear
+      properties:
+        month:
+          type: string
+        emissions:
+          type: number
+        previousYear:
+          type: number
+
+    Challenge:
+      type: object
+      required:
+        - id
+        - title
+        - description
+        - category
+        - points
+        - carbonSaved
+        - completed
+        - daysLeft
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        points:
+          type: integer
+        carbonSaved:
+          type: number
+        completed:
+          type: boolean
+        daysLeft:
+          type: integer
+
+    LeaderboardEntry:
+      type: object
+      required:
+        - rank
+        - username
+        - carbonSaved
+        - points
+        - badge
+        - avatar
+        - streak
+      properties:
+        rank:
+          type: integer
+        username:
+          type: string
+        carbonSaved:
+          type: number
+        points:
+          type: integer
+        badge:
+          type: string
+        avatar:
+          type: string
+        streak:
+          type: integer
+
+    UserProfile:
+      type: object
+      required:
+        - username
+        - level
+        - currentXp
+        - xpToNextLevel
+        - totalPoints
+        - streak
+        - badges
+        - totalCarbonSaved
+        - rank
+        - avatar
+      properties:
+        username:
+          type: string
+        level:
+          type: integer
+        currentXp:
+          type: integer
+        xpToNextLevel:
+          type: integer
+        totalPoints:
+          type: integer
+        streak:
+          type: integer
+        totalCarbonSaved:
+          type: number
+        rank:
+          type: integer
+        avatar:
+          type: string
+        badges:
+          type: array
+          items:
+            $ref: "#/components/schemas/Badge"
+
+    Badge:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - icon
+        - earned
+        - earnedAt
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+        earned:
+          type: boolean
+        earnedAt:
+          type: ["string", "null"]
+
+    Recommendation:
+      type: object
+      required:
+        - id
+        - category
+        - insight
+        - suggestion
+        - estimatedCarbonSaving
+        - priority
+      properties:
+        id:
+          type: integer
+        category:
+          type: string
+        insight:
+          type: string
+        suggestion:
+          type: string
+        estimatedCarbonSaving:
+          type: number
+        priority:
+          type: string
+
+    EcoTip:
+      type: object
+      required:
+        - id
+        - tip
+        - category
+        - carbonImpact
+      properties:
+        id:
+          type: integer
+        tip:
+          type: string
+        category:
+          type: string
+        carbonImpact:
+          type: string

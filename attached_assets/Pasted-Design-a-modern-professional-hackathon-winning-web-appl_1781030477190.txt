@@ -1,0 +1,296 @@
+Design a modern, professional, hackathon-winning web application called EcoTrack AI that helps users understand, track, and reduce their carbon footprint through AI-powered insights and gamification.
+
+Design Style
+
+- Modern SaaS dashboard design
+- Clean, premium, and futuristic UI
+- Green and blue eco-friendly color palette
+- Smooth animations and micro-interactions
+- Fully responsive (desktop, tablet, mobile)
+- Glassmorphism and modern card layouts
+- Professional typography
+- Dark Mode and Light Mode support
+
+---
+
+Landing Page
+
+Hero Section
+
+Large headline:
+
+Track & Reduce Your Carbon Footprint
+
+Subheading:
+"Measure your environmental impact, get AI-powered recommendations, and build sustainable habits."
+
+Buttons:
+
+- Start Assessment
+- View Dashboard Demo
+
+Hero illustration:
+
+- Earth
+- Trees
+- Sustainable energy
+- Carbon tracking graphics
+
+---
+
+Features Section
+
+Display 3 feature cards:
+
+Calculate
+
+Measure your carbon emissions from daily activities.
+
+Track
+
+Monitor your weekly and monthly environmental impact.
+
+Reduce
+
+Receive personalized AI suggestions to lower emissions.
+
+Use modern icons and hover effects.
+
+---
+
+How It Works Section
+
+Step 1:
+Answer a few lifestyle questions.
+
+Step 2:
+AI calculates your carbon footprint.
+
+Step 3:
+Receive personalized recommendations.
+
+Step 4:
+Track progress and earn rewards.
+
+Display as a beautiful timeline.
+
+---
+
+Testimonials Section
+
+Create 3 testimonial cards from users discussing how EcoTrack AI helped them reduce emissions.
+
+---
+
+Footer
+
+Include:
+
+- About
+- Features
+- Contact
+- Privacy Policy
+- Social Media Links
+
+---
+
+Carbon Assessment Page
+
+Create a multi-step assessment wizard.
+
+Progress bar at top.
+
+Transportation
+
+Questions:
+
+- Daily bike/car kilometers
+- Do you use public transportation?
+- Number of flights per year
+
+Modern sliders and input fields.
+
+---
+
+Electricity
+
+Questions:
+
+- AC usage hours per day
+- Fan usage hours
+- Monthly electricity bill
+
+Use intuitive UI controls.
+
+---
+
+Food
+
+Questions:
+
+- Vegetarian or Non-Vegetarian
+- Food delivery frequency per week
+
+Use attractive selection cards.
+
+---
+
+Shopping
+
+Questions:
+
+- Online orders per month
+
+Use slider input.
+
+---
+
+AI Carbon Calculator Results
+
+Generate a detailed results screen.
+
+Show:
+
+Transport:
+45 kg CO₂
+
+Electricity:
+30 kg CO₂
+
+Food:
+20 kg CO₂
+
+Total:
+95 kg CO₂/month
+
+Display:
+
+- Circular progress indicator
+- Carbon score meter
+- Environmental impact summary
+
+Include visual comparison against average users.
+
+---
+
+Dashboard
+
+Create a beautiful analytics dashboard.
+
+Widgets:
+
+Weekly Progress Chart
+
+Line chart showing carbon reduction.
+
+Monthly Progress Chart
+
+Bar chart showing monthly emissions.
+
+Category-wise Emissions
+
+Pie chart displaying:
+
+- Transport
+- Electricity
+- Food
+- Shopping
+
+Use Recharts or Chart.js style visualizations.
+
+---
+
+AI Recommendations Section
+
+AI-generated recommendations card.
+
+Example insight:
+
+"Your transportation emissions are 40% higher than average."
+
+Suggestions:
+
+- Use bicycle for short distances
+- Use public transportation
+- Try car pooling
+- Reduce unnecessary travel
+
+Display estimated carbon savings.
+
+Add AI assistant chat widget.
+
+---
+
+Gamification System
+
+User profile card.
+
+Badges:
+
+- Green Beginner
+- Eco Warrior
+- Climate Hero
+
+Points System:
+
+Each eco-friendly action = +10 points
+
+Show:
+
+- XP Progress Bar
+- Achievement Cards
+- Level System
+
+---
+
+Weekly Challenges
+
+Create challenge cards:
+
+No Plastic Day
+
+No Car Day
+
+Save Electricity Challenge
+
+Display:
+
+- Completion status
+- Rewards
+- Progress tracking
+
+---
+
+Leaderboard
+
+Show top eco-friendly users.
+
+Columns:
+
+- Rank
+- User
+- Carbon Saved
+- Points
+- Badge
+
+Top 3 users highlighted with premium cards.
+
+---
+
+Additional Premium Features
+
+- AI Sustainability Assistant
+- Daily Eco Tips
+- Carbon Reduction Goals
+- Streak Tracking
+- Tree Plantation Tracker
+- Share Achievement on Social Media
+- Personalized Sustainability Report
+- Carbon Offset Suggestions
+- Community Challenges
+
+---
+
+Final Goal
+
+The design should look like a startup-ready, hackathon-winning, investor-level product that is visually impressive, highly interactive, modern, and focused on sustainability, AI-powered insights, and user engagement.
