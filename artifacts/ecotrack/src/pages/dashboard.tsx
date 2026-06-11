@@ -1,17 +1,39 @@
 import { MainLayout } from "@/components/layout/MainLayout";
+import { useMemo } from "react";
 import {
-  useGetDashboardSummary, getGetDashboardSummaryQueryKey,
-  useGetWeeklyProgress, getGetWeeklyProgressQueryKey,
-  useGetMonthlyProgress, getGetMonthlyProgressQueryKey,
+  useGetDashboardSummary,
+  getGetDashboardSummaryQueryKey,
+  useGetWeeklyProgress,
+  getGetWeeklyProgressQueryKey,
+  useGetMonthlyProgress,
+  getGetMonthlyProgressQueryKey,
 } from "@workspace/api-client-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, Legend,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
 } from "recharts";
 import { Leaf, Target, Award, ArrowUp, ArrowDown } from "lucide-react";
 
+/** Chart colors for consistent visualization */
 const CHART_COLORS = [
   "hsl(var(--chart-1))",
   "hsl(var(--chart-2))",
@@ -19,13 +41,18 @@ const CHART_COLORS = [
   "hsl(var(--chart-4))",
 ] as const;
 
+/** Tooltip styling for chart components */
 const TOOLTIP_STYLE = {
   backgroundColor: "hsl(var(--popover))",
   border: "1px solid hsl(var(--border))",
   borderRadius: "var(--radius)",
 } as const;
 
-export default function Dashboard() {
+/**
+ * Dashboard page component.
+ * Displays user's carbon footprint metrics, trends, and category breakdown.
+ */
+export default function Dashboard(): JSX.Element {
   const { data: summary, isLoading: isLoadingSummary } = useGetDashboardSummary({
     query: { queryKey: getGetDashboardSummaryQueryKey() },
   });
@@ -36,14 +63,16 @@ export default function Dashboard() {
     query: { queryKey: getGetMonthlyProgressQueryKey() },
   });
 
-  const pieData = summary
-    ? [
-        { name: "Transport", value: summary.categoryBreakdown.transport },
-        { name: "Electricity", value: summary.categoryBreakdown.electricity },
-        { name: "Food", value: summary.categoryBreakdown.food },
-        { name: "Shopping", value: summary.categoryBreakdown.shopping },
-      ]
-    : [];
+  // Memoize pie chart data to avoid unnecessary recalculations
+  const pieData = useMemo(() => {
+    if (!summary) return [];
+    return [
+      { name: "Transport", value: summary.categoryBreakdown.transport },
+      { name: "Electricity", value: summary.categoryBreakdown.electricity },
+      { name: "Food", value: summary.categoryBreakdown.food },
+      { name: "Shopping", value: summary.categoryBreakdown.shopping },
+    ];
+  }, [summary]);
 
   return (
     <MainLayout>

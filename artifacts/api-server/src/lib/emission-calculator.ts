@@ -1,28 +1,39 @@
 /**
  * Emission factor constants.
  * Sources: IPCC AR6, IEA 2023, EPA GHG equivalencies.
+ * All values are in kg CO₂e (carbon dioxide equivalent).
  */
 
 /** kg CO₂e per km driven (private car, petrol) */
 const FACTOR_PRIVATE_CAR_KM = 0.21;
+
 /** kg CO₂e per km driven (bus/rail average) */
 const FACTOR_PUBLIC_TRANSPORT_KM = 0.05;
+
 /** kg CO₂e per flight (average short-haul, economy) */
 const FACTOR_FLIGHT = 90;
+
 /** kg CO₂e per kWh of average grid electricity */
 const FACTOR_AC_KWH_PER_HOUR = 0.8;
+
 /** kg CO₂e per kWh for a ceiling fan */
 const FACTOR_FAN_KWH_PER_HOUR = 0.075;
+
 /** kg CO₂e per $ of electricity bill (proxy for kWh) */
 const FACTOR_BILL_KG_PER_DOLLAR = 0.85;
+
 /** kg CO₂e/month baseline for omnivore diet */
 const BASE_OMNIVORE_FOOD = 22;
+
 /** kg CO₂e/month baseline for vegetarian diet */
 const BASE_VEGETARIAN_FOOD = 10;
+
 /** kg CO₂e per food-delivery order (packaging + transit) */
 const FACTOR_FOOD_DELIVERY_OMNIVORE = 2.5;
+
 /** kg CO₂e per food-delivery order (plant-based menu) */
 const FACTOR_FOOD_DELIVERY_VEGETARIAN = 1.2;
+
 /** kg CO₂e per online retail parcel (packaging + last-mile) */
 const FACTOR_ONLINE_ORDER = 3.5;
 
@@ -31,9 +42,13 @@ const AVG_MONTHLY_EMISSIONS_KG = 200;
 
 /** Days in the month used for daily→monthly conversions. */
 const DAYS_PER_MONTH = 30;
+
 /** Weeks in the month used for weekly→monthly conversions. */
 const WEEKS_PER_MONTH = 4;
 
+/**
+ * Represents user lifestyle inputs for carbon footprint calculation.
+ */
 export interface EmissionInputs {
   /** Weekly driving distance in km. */
   transportKm: number;
@@ -55,6 +70,9 @@ export interface EmissionInputs {
   onlineOrdersPerMonth: number;
 }
 
+/**
+ * Represents calculated monthly carbon emissions breakdown.
+ */
 export interface EmissionResults {
   /** Monthly transport emissions in kg CO₂e. */
   transportEmissions: number;
@@ -69,6 +87,7 @@ export interface EmissionResults {
   /**
    * A 0–100 carbon score where higher is better (lower footprint).
    * Scored relative to {@link AVG_MONTHLY_EMISSIONS_KG}.
+   * Formula: max(0, min(100, 100 - (total / AVG) * 50))
    */
   carbonScore: number;
 }
@@ -77,6 +96,16 @@ export interface EmissionResults {
  * Calculate estimated monthly carbon emissions from lifestyle inputs.
  *
  * All intermediate values are in kg CO₂ equivalent (CO₂e) per month.
+ *
+ * **Methodology:**
+ * - Transport: km driven * days/month * emission factor, plus annual flights
+ * - Electricity: AC/fan hours * daily * days/month + electricity bill proxy
+ * - Food: baseline diet + delivery orders * factor * weeks/month
+ * - Shopping: online orders * factor
+ *
+ * **Carbon Score (0-100):**
+ * A relative score where 100 = zero emissions, 0 = double average user.
+ * Users with below-average emissions score > 50.
  *
  * @param data - User-provided lifestyle data from the assessment wizard.
  * @returns Breakdown and total monthly emissions plus a relative carbon score.
@@ -88,10 +117,11 @@ export interface EmissionResults {
  *   acHoursPerDay: 4, fanHoursPerDay: 2, monthlyElectricityBill: 60,
  *   isVegetarian: true, foodDeliveryPerWeek: 1, onlineOrdersPerMonth: 3,
  * });
- * console.log(result.carbonScore); // 0–100
+ * console.log(result.carbonScore); // 0–100, higher is better
  * ```
  */
 export function calculateEmissions(data: EmissionInputs): EmissionResults {
+  // Calculate transport emissions
   const transportFactor = data.usesPublicTransport
     ? FACTOR_PUBLIC_TRANSPORT_KM
     : FACTOR_PRIVATE_CAR_KM;
@@ -100,11 +130,13 @@ export function calculateEmissions(data: EmissionInputs): EmissionResults {
     data.transportKm * DAYS_PER_MONTH * transportFactor +
     data.flightsPerYear * FACTOR_FLIGHT;
 
+  // Calculate electricity emissions
   const electricityEmissions =
     data.acHoursPerDay * FACTOR_AC_KWH_PER_HOUR * DAYS_PER_MONTH +
     data.fanHoursPerDay * FACTOR_FAN_KWH_PER_HOUR * DAYS_PER_MONTH +
     data.monthlyElectricityBill * FACTOR_BILL_KG_PER_DOLLAR;
 
+  // Calculate food emissions
   const deliveryFactor = data.isVegetarian
     ? FACTOR_FOOD_DELIVERY_VEGETARIAN
     : FACTOR_FOOD_DELIVERY_OMNIVORE;
@@ -112,11 +144,14 @@ export function calculateEmissions(data: EmissionInputs): EmissionResults {
   const foodEmissions =
     baseFood + data.foodDeliveryPerWeek * deliveryFactor * WEEKS_PER_MONTH;
 
+  // Calculate shopping emissions
   const shoppingEmissions = data.onlineOrdersPerMonth * FACTOR_ONLINE_ORDER;
 
+  // Calculate totals
   const totalEmissions =
     transportEmissions + electricityEmissions + foodEmissions + shoppingEmissions;
 
+  // Calculate carbon score (0-100, higher is better)
   const carbonScore = Math.max(
     0,
     Math.min(

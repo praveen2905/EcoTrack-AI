@@ -5,11 +5,13 @@ import rateLimit from "express-rate-limit";
 import pinoHttp from "pino-http";
 import router from "./routes";
 import { logger } from "./lib/logger";
+import { errorHandler } from "./middleware/errorHandler";
 
 const app: Express = express();
 
 app.set("trust proxy", 1);
 
+// Security middleware
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -28,6 +30,7 @@ app.use(
   }),
 );
 
+// Rate limiting
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 200,
@@ -44,6 +47,7 @@ const writeLimiter = rateLimit({
   message: { error: "Too many write requests, please slow down." },
 });
 
+// HTTP logging
 app.use(
   pinoHttp({
     logger,
@@ -64,6 +68,7 @@ app.use(
   }),
 );
 
+// CORS configuration
 const allowedOrigins = new Set([
   "http://localhost",
   "http://localhost:80",
@@ -88,13 +93,19 @@ app.use(
   }),
 );
 
+// Body parsing
 app.use(express.json({ limit: "100kb" }));
 app.use(express.urlencoded({ extended: true, limit: "100kb" }));
 
+// Apply rate limiters
 app.use("/api", apiLimiter);
 app.use("/api/assessments", writeLimiter);
 app.use("/api/challenges", writeLimiter);
 
+// Routes
 app.use("/api", router);
+
+// Error handling (must be last)
+app.use(errorHandler);
 
 export default app;

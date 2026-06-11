@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useMemo } from "react";
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -17,30 +17,48 @@ const Challenges = lazy(() => import("@/pages/challenges"));
 const Leaderboard = lazy(() => import("@/pages/leaderboard"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5,
-      gcTime: 1000 * 60 * 10,
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+/**
+ * Creates and memoizes the React Query client configuration.
+ * Prevents unnecessary recreations of the client on re-renders.
+ */
+function useQueryClientMemo(): QueryClient {
+  return useMemo(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 1000 * 60 * 5,
+            gcTime: 1000 * 60 * 10,
+            retry: 1,
+            refetchOnWindowFocus: false,
+          },
+        },
+      }),
+    [],
+  );
+}
 
-const PageLoader = () => (
-  <div className="min-h-screen flex flex-col gap-4 p-8">
-    <Skeleton className="h-8 w-48" />
-    <Skeleton className="h-64 w-full rounded-xl" />
-    <div className="grid grid-cols-3 gap-4">
-      <Skeleton className="h-32 rounded-xl" />
-      <Skeleton className="h-32 rounded-xl" />
-      <Skeleton className="h-32 rounded-xl" />
+/**
+ * Loading fallback component displayed while pages are being loaded.
+ */
+function PageLoader(): JSX.Element {
+  return (
+    <div className="min-h-screen flex flex-col gap-4 p-8">
+      <Skeleton className="h-8 w-48" />
+      <Skeleton className="h-64 w-full rounded-xl" />
+      <div className="grid grid-cols-3 gap-4">
+        <Skeleton className="h-32 rounded-xl" />
+        <Skeleton className="h-32 rounded-xl" />
+        <Skeleton className="h-32 rounded-xl" />
+      </div>
     </div>
-  </div>
-);
+  );
+}
 
-function Router() {
+/**
+ * Router component that defines all application routes.
+ */
+function Router(): JSX.Element {
   return (
     <ErrorBoundary>
       <Suspense fallback={<PageLoader />}>
@@ -60,10 +78,21 @@ function Router() {
   );
 }
 
-function App() {
+/**
+ * Main application component.
+ * Sets up all providers: QueryClient, Theme, Router, Tooltips, and Toaster.
+ */
+function App(): JSX.Element {
+  const queryClient = useQueryClientMemo();
+
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
         <TooltipProvider>
           <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
             <Router />
