@@ -1,8 +1,0 @@
-[build]
-command = "pnpm install && pnpm --filter @workspace/ecotrack run build"
-publish = "artifacts/ecotrack/dist"
-
-[[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
