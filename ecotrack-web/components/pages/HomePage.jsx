@@ -6,6 +6,9 @@ import {
   Share2, Globe, Mail, Users, CheckCircle2,
 } from "lucide-react";
 
+/**
+ * Pre-configured list of mock customer testimonials.
+ */
 const TESTIMONIALS = [
   {
     quote: "EcoTrack AI completely changed how I think about my daily commute. The AI recommendations are so specific and actually manageable.",
@@ -21,6 +24,9 @@ const TESTIMONIALS = [
   },
 ];
 
+/**
+ * Pre-configured list of steps describing the user journey.
+ */
 const JOURNEY_STEPS = [
   { num: "01", label: "Initial Discovery", desc: "A quick 5-minute survey about your daily energy, transport, and consumption habits.", right: "Answer questions" },
   { num: "02", label: "AI Analysis", desc: "Our proprietary AI calculates your exact carbon tonnage using global standards.", right: "EcoTrack Computes" },
@@ -28,10 +34,22 @@ const JOURNEY_STEPS = [
   { num: "04", label: "Track & Earn", desc: "Track real-time progress, join global leaderboard challenges, and unlock eco-rewards.", right: "Ongoing Impact" },
 ];
 
+/**
+ * HomePage component rendering the application landing page.
+ *
+ * @returns {React.ReactElement} The rendered HomePage component.
+ */
 export default function HomePage() {
+  const socialIcons = [
+    { Icon: Share2, label: "Share website link" },
+    { Icon: Globe, label: "Visit our global network website" },
+    { Icon: Mail, label: "Send us an email" },
+    { Icon: Users, label: "Join our community forums" },
+  ];
+
   return (
     <MainLayout fullWidth>
-      <section className="container mx-auto max-w-6xl px-4 py-16 md:py-24">
+      <section className="container mx-auto max-w-6xl px-4 py-16 md:py-24" aria-label="Hero section">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="flex-1 space-y-6">
             <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-foreground">
@@ -43,18 +61,18 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap items-center gap-4 pt-4">
               <Link href="/assess">
-                <Button size="lg" className="h-14 px-8 text-lg rounded-full">
+                <Button size="lg" className="h-14 px-8 text-lg rounded-full" aria-label="Start carbon footprint assessment">
                   Start Assessment <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link href="/dashboard">
-                <Button size="lg" variant="outline" className="h-14 px-8 text-lg rounded-full">
+                <Button size="lg" variant="outline" className="h-14 px-8 text-lg rounded-full" aria-label="View application dashboard demo">
                   View Demo
                 </Button>
               </Link>
             </div>
           </div>
-          <div className="flex-1 w-full max-w-[500px] aspect-square relative flex items-center justify-center">
+          <div className="flex-1 w-full max-w-[500px] aspect-square relative flex items-center justify-center" aria-hidden="true">
             <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl animate-pulse" />
             <div className="relative w-64 h-64 border-4 border-primary/20 rounded-full flex items-center justify-center animate-[spin_10s_linear_infinite]">
               <div className="absolute w-4 h-4 bg-primary rounded-full top-0 -translate-y-1/2" />
@@ -69,7 +87,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="container mx-auto max-w-6xl px-4 pb-20">
+      <section className="container mx-auto max-w-6xl px-4 pb-20" aria-label="Features summary">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {[
             { icon: <BarChart2 className="w-6 h-6 text-primary" />, bg: "bg-primary/10", title: "Precision Tracking", body: "Log transportation, energy, and consumption data to get an accurate picture of your true environmental impact." },
@@ -85,7 +103,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="w-full bg-[hsl(220_25%_10%)] dark:bg-[hsl(220_25%_8%)] py-20 px-4">
+      <section className="w-full bg-[hsl(220_25%_10%)] dark:bg-[hsl(220_25%_8%)] py-20 px-4" aria-label="Sustainability tools">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-14">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Powerful Tools for Change</h2>
@@ -107,7 +125,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="w-full bg-background py-20 px-4">
+      <section className="w-full bg-background py-20 px-4" aria-label="Customer onboarding path">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-14">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">The Journey to Net Zero</h2>
@@ -138,7 +156,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="w-full bg-[hsl(220_25%_10%)] dark:bg-[hsl(220_25%_8%)] py-20 px-4">
+      <section className="w-full bg-[hsl(220_25%_10%)] dark:bg-[hsl(220_25%_8%)] py-20 px-4" aria-label="Customer testimonials">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-14">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Trusted by Conscious Humans</h2>
@@ -147,14 +165,14 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {TESTIMONIALS.map((t) => (
               <div key={t.name} className="bg-white/5 border border-white/10 rounded-2xl p-8 flex flex-col gap-6">
-                <div className="flex gap-1">
+                <div className="flex gap-1" aria-label={`Rating: ${t.rating} stars`}>
                   {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                    <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true" />
                   ))}
                 </div>
                 <p className="text-slate-300 leading-relaxed flex-1 italic">&ldquo;{t.quote}&rdquo;</p>
                 <div className="flex items-center gap-3 pt-2 border-t border-white/10">
-                  <div className="w-10 h-10 rounded-full bg-primary/30 flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">{t.initials}</div>
+                  <div className="w-10 h-10 rounded-full bg-primary/30 flex items-center justify-center text-primary font-bold text-sm flex-shrink-0" aria-hidden="true">{t.initials}</div>
                   <div>
                     <p className="text-white font-semibold text-sm">{t.name}</p>
                     <p className="text-slate-500 text-xs">{t.title}</p>
@@ -166,24 +184,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="w-full bg-primary py-20 px-4">
+      <section className="w-full bg-primary py-20 px-4" aria-label="Call to action">
         <div className="container mx-auto max-w-3xl text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground mb-4">Ready to make an impact?</h2>
           <p className="text-primary-foreground/80 text-lg mb-10 max-w-lg mx-auto">Join the movement and start your AI-powered sustainability assessment today. It&apos;s free to start.</p>
           <Link href="/assess">
-            <Button size="lg" className="h-14 px-10 text-lg rounded-full bg-white text-primary hover:bg-white/90 font-bold shadow-lg">
+            <Button size="lg" className="h-14 px-10 text-lg rounded-full bg-white text-primary hover:bg-white/90 font-bold shadow-lg" aria-label="Get started for free now">
               Start Your Assessment Now
             </Button>
           </Link>
         </div>
       </section>
 
-      <footer className="w-full bg-[hsl(220_25%_7%)] dark:bg-[hsl(220_25%_5%)] py-14 px-4">
+      <footer className="w-full bg-[hsl(220_25%_7%)] dark:bg-[hsl(220_25%_5%)] py-14 px-4" role="contentinfo">
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col md:flex-row justify-between gap-10 mb-12">
             <div className="max-w-xs">
               <div className="flex items-center gap-2 mb-4">
-                <Leaf className="w-6 h-6 text-primary" />
+                <Leaf className="w-6 h-6 text-primary" aria-hidden="true" />
                 <span className="text-white font-bold text-lg">EcoTrack AI</span>
               </div>
               <p className="text-slate-500 text-sm leading-relaxed">Empowering individuals and businesses with intelligence-driven sustainability solutions.</p>
@@ -219,9 +237,9 @@ export default function HomePage() {
           <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-slate-600 text-sm">&copy; {new Date().getFullYear()} EcoTrack AI. Intelligent Sustainability. All rights reserved.</p>
             <div className="flex items-center gap-4">
-              {[Share2, Globe, Mail, Users].map((Icon, idx) => (
-                <button key={idx} aria-label="Social link" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary/40 transition-colors">
-                  <Icon className="w-4 h-4" />
+              {socialIcons.map(({ Icon, label }, idx) => (
+                <button key={idx} aria-label={label} className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary/40 transition-colors outline-none focus:ring-2 focus:ring-primary/40">
+                  <Icon className="w-4 h-4" aria-hidden="true" />
                 </button>
               ))}
             </div>

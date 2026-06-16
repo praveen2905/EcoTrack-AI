@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * @module components/pages/ResultsPage
+ * @description Page showing carbon assessment breakdown results, complete with chart visualizations
+ * and comparisons against average user emissions.
+ */
+
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
@@ -9,33 +15,33 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend } from "recharts";
 import { ArrowRight, TrendingDown } from "lucide-react";
+import { fetchApi } from "@/lib/api";
 
 const CHART_COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))"];
 const TOOLTIP_STYLE = { backgroundColor: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "var(--radius)" };
 
+/**
+ * ResultsPage component that displays the user's carbon footprint score and details.
+ *
+ * @returns {React.ReactElement} The rendered ResultsPage.
+ */
 export default function ResultsPage() {
   const searchParams = useSearchParams();
-  const assessmentId = searchParams.get("id") ? parseInt(searchParams.get("id"), 10) : null;
+  const assessmentIdRaw = searchParams.get("id");
+  const assessmentId = assessmentIdRaw ? parseInt(assessmentIdRaw, 10) : null;
 
   const { data: assessment, isLoading } = useQuery({
     queryKey: ["assessment", assessmentId],
-    queryFn: async () => {
-      const res = await fetch(`/api/assessments/${assessmentId}`);
-      if (!res.ok) throw new Error("Not found");
-      return res.json();
-    },
-    enabled: !!assessmentId,
+    queryFn: () => fetchApi(`/api/assessments/${assessmentId}`),
+    enabled: !!assessmentId && !isNaN(assessmentId),
   });
 
   const { data: summary } = useQuery({
     queryKey: ["dashboard-summary"],
-    queryFn: async () => {
-      const res = await fetch("/api/dashboard/summary");
-      return res.json();
-    },
+    queryFn: () => fetchApi("/api/dashboard/summary"),
   });
 
-  if (!assessmentId) {
+  if (!assessmentId || isNaN(assessmentId)) {
     return (
       <MainLayout>
         <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
@@ -79,13 +85,13 @@ export default function ResultsPage() {
               <Card className="flex flex-col">
                 <CardHeader><CardTitle>Total Emissions</CardTitle><CardDescription>Monthly CO₂ equivalent</CardDescription></CardHeader>
                 <CardContent className="flex-1 flex flex-col items-center justify-center space-y-6">
-                  <div className="relative w-48 h-48 flex items-center justify-center rounded-full border-8 border-primary/20">
+                  <div className="relative w-48 h-48 flex items-center justify-center rounded-full border-8 border-primary/20" aria-label={`Total emissions: ${assessment.totalEmissions.toFixed(0)} kg CO₂ per month`}>
                     <div className="text-center z-10">
                       <div className="text-4xl font-bold">{assessment.totalEmissions.toFixed(0)}</div>
                       <div className="text-sm text-muted-foreground">kg CO₂/month</div>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-3 w-full text-sm">
+                  <div className="grid grid-cols-2 gap-3 w-full text-sm" aria-label="Emissions breakdown by category">
                     {[
                       { label: "Transport", value: assessment.transportEmissions },
                       { label: "Electricity", value: assessment.electricityEmissions },
@@ -98,13 +104,13 @@ export default function ResultsPage() {
                       </div>
                     ))}
                   </div>
-                  <div className="px-3 py-1 bg-primary/10 text-primary rounded-full font-medium">Score: {assessment.carbonScore}/100</div>
+                  <div className="px-3 py-1 bg-primary/10 text-primary rounded-full font-medium" aria-label={`Carbon Score: ${assessment.carbonScore} out of 100`}>Score: {assessment.carbonScore}/100</div>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader><CardTitle>Breakdown</CardTitle><CardDescription>Where your emissions come from</CardDescription></CardHeader>
                 <CardContent>
-                  <div className="h-[280px]">
+                  <div className="h-[280px]" role="img" aria-label="Pie chart displaying emission distribution: transport, electricity, food, and shopping. Refer to text table for details.">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie data={pieData} cx="50%" cy="45%" innerRadius={55} outerRadius={85} paddingAngle={2} dataKey="value">

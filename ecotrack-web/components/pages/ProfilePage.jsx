@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * @module components/pages/ProfilePage
+ * @description Profile page displaying current level, XP progress, lifetime metrics
+ * (carbon saved, equivalent trees, total points), and badges/achievements.
+ */
+
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { MainLayout } from "@/components/layout/MainLayout";
@@ -8,14 +14,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Flame, Trophy, Award, TreePine, Leaf } from "lucide-react";
+import { fetchApi } from "@/lib/api";
 
+/**
+ * ProfilePage component displaying user metrics, badges, and stats.
+ *
+ * @returns {React.ReactElement} The rendered ProfilePage.
+ */
 export default function ProfilePage() {
   const { data: profile, isLoading } = useQuery({
     queryKey: ["profile"],
-    queryFn: async () => {
-      const res = await fetch("/api/profile");
-      return res.json();
-    },
+    queryFn: () => fetchApi("/api/profile"),
   });
 
   return (
@@ -41,7 +50,9 @@ export default function ProfilePage() {
                 <div className="absolute -bottom-10 left-6">
                   <Avatar className="h-20 w-20 border-4 border-background">
                     <AvatarImage src={profile.avatar} alt={profile.username} />
-                    <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">{profile.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+                    <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">
+                      {profile.username.substring(0, 2).toUpperCase()}
+                    </AvatarFallback>
                   </Avatar>
                 </div>
               </div>
@@ -53,11 +64,15 @@ export default function ProfilePage() {
                   </div>
                   <div className="flex gap-4">
                     <div className="flex flex-col items-center">
-                      <div className="flex items-center text-orange-500 font-bold text-xl"><Flame className="h-5 w-5 mr-1" /> {profile.streak}</div>
+                      <div className="flex items-center text-orange-500 font-bold text-xl" aria-label={`Current streak: ${profile.streak} days`}>
+                        <Flame className="h-5 w-5 mr-1" aria-hidden="true" /> {profile.streak}
+                      </div>
                       <span className="text-xs text-muted-foreground">Day Streak</span>
                     </div>
                     <div className="flex flex-col items-center">
-                      <div className="flex items-center text-primary font-bold text-xl"><Trophy className="h-5 w-5 mr-1" /> #{profile.rank}</div>
+                      <div className="flex items-center text-primary font-bold text-xl" aria-label={`Current global rank: number ${profile.rank}`}>
+                        <Trophy className="h-5 w-5 mr-1" aria-hidden="true" /> #{profile.rank}
+                      </div>
                       <span className="text-xs text-muted-foreground">Global Rank</span>
                     </div>
                   </div>
@@ -67,7 +82,11 @@ export default function ProfilePage() {
                     <span>XP Progress</span>
                     <span>{profile.currentXp} / {profile.xpToNextLevel} XP</span>
                   </div>
-                  <Progress value={(profile.currentXp / profile.xpToNextLevel) * 100} className="h-3" />
+                  <Progress
+                    value={(profile.currentXp / profile.xpToNextLevel) * 100}
+                    className="h-3"
+                    aria-label={`XP progress: ${profile.currentXp} out of ${profile.xpToNextLevel}`}
+                  />
                   <p className="text-xs text-muted-foreground text-right">{profile.xpToNextLevel - profile.currentXp} XP to Level {profile.level + 1}</p>
                 </div>
               </CardContent>
@@ -79,35 +98,35 @@ export default function ProfilePage() {
                 <CardContent className="space-y-6">
                   <div className="flex items-center justify-between p-4 bg-primary/5 rounded-xl">
                     <div className="flex items-center gap-3">
-                      <div className="p-3 bg-primary/10 rounded-lg"><Leaf className="h-6 w-6 text-primary" /></div>
+                      <div className="p-3 bg-primary/10 rounded-lg"><Leaf className="h-6 w-6 text-primary" aria-hidden="true" /></div>
                       <div><p className="font-medium">Carbon Saved</p><p className="text-sm text-muted-foreground">Compared to average</p></div>
                     </div>
-                    <div className="text-2xl font-bold text-primary">{profile.totalCarbonSaved}kg</div>
+                    <div className="text-2xl font-bold text-primary" aria-label={`${profile.totalCarbonSaved} kilograms carbon saved`}>{profile.totalCarbonSaved}kg</div>
                   </div>
                   <div className="flex items-center justify-between p-4 bg-secondary/5 rounded-xl">
                     <div className="flex items-center gap-3">
-                      <div className="p-3 bg-secondary/10 rounded-lg"><Award className="h-6 w-6 text-secondary" /></div>
+                      <div className="p-3 bg-secondary/10 rounded-lg"><Award className="h-6 w-6 text-secondary" aria-hidden="true" /></div>
                       <div><p className="font-medium">Total Points</p><p className="text-sm text-muted-foreground">From challenges</p></div>
                     </div>
-                    <div className="text-2xl font-bold text-secondary">{profile.totalPoints}</div>
+                    <div className="text-2xl font-bold text-secondary" aria-label={`${profile.totalPoints} total points earned`}>{profile.totalPoints}</div>
                   </div>
                   <div className="flex items-center justify-between p-4 bg-accent/50 rounded-xl">
                     <div className="flex items-center gap-3">
-                      <div className="p-3 bg-background rounded-lg shadow-sm border border-border"><TreePine className="h-6 w-6 text-foreground" /></div>
+                      <div className="p-3 bg-background rounded-lg shadow-sm border border-border"><TreePine className="h-6 w-6 text-foreground" aria-hidden="true" /></div>
                       <div><p className="font-medium">Trees Equivalent</p><p className="text-sm text-muted-foreground">Impact visualised</p></div>
                     </div>
-                    <div className="text-2xl font-bold">{Math.floor(profile.totalCarbonSaved / 20)}</div>
+                    <div className="text-2xl font-bold" aria-label={`Equivalent to ${Math.floor(profile.totalCarbonSaved / 20)} trees planted`}>{Math.floor(profile.totalCarbonSaved / 20)}</div>
                   </div>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader><CardTitle>Badges & Achievements</CardTitle><CardDescription>Unlocked through milestones</CardDescription></CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-3 gap-4" aria-label="Achievements and badges list">
                     {profile.badges.map((badge) => (
-                      <div key={badge.id} className={`flex flex-col items-center p-3 rounded-xl border text-center transition-all ${badge.earned ? "bg-card border-primary/20 shadow-sm" : "bg-muted/50 border-dashed opacity-50 grayscale"}`}>
+                      <div key={badge.id} className={`flex flex-col items-center p-3 rounded-xl border text-center transition-all ${badge.earned ? "bg-card border-primary/20 shadow-sm" : "bg-muted/50 border-dashed opacity-50 grayscale"}`} aria-label={`${badge.name} badge: ${badge.earned ? "earned" : "locked"}`}>
                         <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-2 ${badge.earned ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
-                          {badge.name.includes("Beginner") ? <Leaf className="h-6 w-6" /> : badge.name.includes("Warrior") ? <Award className="h-6 w-6" /> : <Trophy className="h-6 w-6" />}
+                          {badge.name.includes("Beginner") ? <Leaf className="h-6 w-6" aria-hidden="true" /> : badge.name.includes("Warrior") ? <Award className="h-6 w-6" aria-hidden="true" /> : <Trophy className="h-6 w-6" aria-hidden="true" />}
                         </div>
                         <span className="text-xs font-bold leading-tight mb-1">{badge.name}</span>
                         {badge.earned && badge.earnedAt && <span className="text-[10px] text-muted-foreground">{format(new Date(badge.earnedAt), "MMM yyyy")}</span>}

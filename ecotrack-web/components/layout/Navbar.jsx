@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * @module components/layout/Navbar
+ * @description The main navigation header bar, supporting theme switching, responsive design,
+ * active link indicators, and sheet-based mobile navigation drawer.
+ */
+
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,6 +16,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
+/**
+ * Configuration list for navigation links.
+ */
 const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/assess", label: "Assess", icon: Activity },
@@ -19,6 +28,11 @@ const NAV_LINKS = [
   { href: "/profile", label: "Profile", icon: User },
 ];
 
+/**
+ * Navbar component providing sticky layout header and dark mode toggles.
+ *
+ * @returns {React.ReactElement} The rendered Navbar component.
+ */
 export function Navbar() {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
