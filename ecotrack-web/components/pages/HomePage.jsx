@@ -61,12 +61,12 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap items-center gap-4 pt-4">
               <Link href="/assess">
-                <Button size="lg" className="h-14 px-8 text-lg rounded-full" aria-label="Start carbon footprint assessment">
+                <Button size="lg" className="h-14 px-8 text-lg rounded-full" aria-label="Start Assessment">
                   Start Assessment <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link href="/dashboard">
-                <Button size="lg" variant="outline" className="h-14 px-8 text-lg rounded-full" aria-label="View application dashboard demo">
+                <Button size="lg" variant="outline" className="h-14 px-8 text-lg rounded-full" aria-label="View Demo">
                   View Demo
                 </Button>
               </Link>
@@ -96,7 +96,7 @@ export default function HomePage() {
           ].map((f) => (
             <div key={f.title} className="bg-card p-8 rounded-2xl border border-border shadow-sm hover:shadow-md transition-shadow">
               <div className={`w-12 h-12 ${f.bg} rounded-xl flex items-center justify-center mb-6`}>{f.icon}</div>
-              <h3 className="text-xl font-bold mb-3">{f.title}</h3>
+              <h2 className="text-xl font-bold mb-3">{f.title}</h2>
               <p className="text-muted-foreground">{f.body}</p>
             </div>
           ))}
@@ -165,7 +165,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {TESTIMONIALS.map((t) => (
               <div key={t.name} className="bg-white/5 border border-white/10 rounded-2xl p-8 flex flex-col gap-6">
-                <div className="flex gap-1" aria-label={`Rating: ${t.rating} stars`}>
+                <div className="flex gap-1" role="img" aria-label={`Rating: ${t.rating} stars`}>
                   {Array.from({ length: t.rating }).map((_, i) => (
                     <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true" />
                   ))}
@@ -175,7 +175,7 @@ export default function HomePage() {
                   <div className="w-10 h-10 rounded-full bg-primary/30 flex items-center justify-center text-primary font-bold text-sm flex-shrink-0" aria-hidden="true">{t.initials}</div>
                   <div>
                     <p className="text-white font-semibold text-sm">{t.name}</p>
-                    <p className="text-slate-500 text-xs">{t.title}</p>
+                    <p className="text-slate-400 text-xs">{t.title}</p>
                   </div>
                 </div>
               </div>
@@ -189,7 +189,7 @@ export default function HomePage() {
           <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground mb-4">Ready to make an impact?</h2>
           <p className="text-primary-foreground/80 text-lg mb-10 max-w-lg mx-auto">Join the movement and start your AI-powered sustainability assessment today. It&apos;s free to start.</p>
           <Link href="/assess">
-            <Button size="lg" className="h-14 px-10 text-lg rounded-full bg-white text-primary hover:bg-white/90 font-bold shadow-lg" aria-label="Get started for free now">
+            <Button size="lg" className="h-14 px-10 text-lg rounded-full bg-white text-primary hover:bg-white/90 font-bold shadow-lg" aria-label="Start Your Assessment Now">
               Start Your Assessment Now
             </Button>
           </Link>
@@ -204,12 +204,12 @@ export default function HomePage() {
                 <Leaf className="w-6 h-6 text-primary" aria-hidden="true" />
                 <span className="text-white font-bold text-lg">EcoTrack AI</span>
               </div>
-              <p className="text-slate-500 text-sm leading-relaxed">Empowering individuals and businesses with intelligence-driven sustainability solutions.</p>
+              <p className="text-slate-400 text-sm leading-relaxed">Empowering individuals and businesses with intelligence-driven sustainability solutions.</p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 text-sm">
               <div>
                 <p className="text-white font-semibold mb-4">Product</p>
-                <ul className="space-y-2 text-slate-500">
+                <ul className="space-y-2 text-slate-400">
                   <li><Link href="/dashboard" className="hover:text-primary transition-colors">Dashboard</Link></li>
                   <li><Link href="/assess" className="hover:text-primary transition-colors">Assessment</Link></li>
                   <li><Link href="/challenges" className="hover:text-primary transition-colors">Challenges</Link></li>
@@ -218,7 +218,7 @@ export default function HomePage() {
               </div>
               <div>
                 <p className="text-white font-semibold mb-4">Company</p>
-                <ul className="space-y-2 text-slate-500">
+                <ul className="space-y-2 text-slate-400">
                   <li><span className="hover:text-primary transition-colors cursor-pointer">About</span></li>
                   <li><span className="hover:text-primary transition-colors cursor-pointer">Features</span></li>
                   <li><span className="hover:text-primary transition-colors cursor-pointer">Contact</span></li>
@@ -226,7 +226,7 @@ export default function HomePage() {
               </div>
               <div>
                 <p className="text-white font-semibold mb-4">Legal</p>
-                <ul className="space-y-2 text-slate-500">
+                <ul className="space-y-2 text-slate-400">
                   <li><span className="hover:text-primary transition-colors cursor-pointer">Privacy Policy</span></li>
                   <li><span className="hover:text-primary transition-colors cursor-pointer">Terms of Service</span></li>
                   <li><span className="hover:text-primary transition-colors cursor-pointer">Cookie Policy</span></li>
@@ -235,10 +235,10 @@ export default function HomePage() {
             </div>
           </div>
           <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-slate-600 text-sm">&copy; {new Date().getFullYear()} EcoTrack AI. Intelligent Sustainability. All rights reserved.</p>
+            <p className="text-slate-400 text-sm">&copy; {new Date().getFullYear()} EcoTrack AI. Intelligent Sustainability. All rights reserved.</p>
             <div className="flex items-center gap-4">
               {socialIcons.map(({ Icon, label }, idx) => (
-                <button key={idx} aria-label={label} className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary/40 transition-colors outline-none focus:ring-2 focus:ring-primary/40">
+                <button key={idx} aria-label={label} className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/40 transition-colors outline-none focus:ring-2 focus:ring-primary/40">
                   <Icon className="w-4 h-4" aria-hidden="true" />
                 </button>
               ))}

@@ -4,7 +4,7 @@ const nextConfig = {
     root: import.meta.dirname,
   },
   experimental: {
-    optimizePackageImports: ["lucide-react", "recharts", "@radix-ui/react-icons"],
+    optimizePackageImports: ["lucide-react", "recharts", "@radix-ui/react-icons", "date-fns"],
   },
   headers: async () => [
     {
