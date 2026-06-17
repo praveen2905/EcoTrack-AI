@@ -45,6 +45,8 @@ This document tracks all improvements made to the codebase across the following 
 - Optimized rendering using memoization, `useMemo`, `useCallback`, and `React.memo`.
 - Replaced inefficient patterns to reduce re-renders.
 - Added `Suspense` boundaries, `loading.js`, and `error.js` route handlers.
+- **Bundle Optimization**: Configured `optimizePackageImports` for `lucide-react` and `recharts` in `next.config.mjs` to eliminate massive JavaScript payload bottlenecks.
+- **Lazy Loading**: Split heavy rendering components (like Recharts visualizations in Dashboard and Results pages) into separate components (`dashboard-charts.jsx`) and lazy-loaded them using `next/dynamic` to immediately resolve Main Thread blocking time and improve FCP/LCP.
 
 ### 6. Problem Statement Alignment
 - Ensured all code aligns perfectly with the stated goals and objectives of the project.

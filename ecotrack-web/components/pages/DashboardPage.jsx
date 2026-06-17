@@ -11,15 +11,14 @@ import { useQuery } from "@tanstack/react-query";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  BarChart, Bar, PieChart, Pie, Cell, Legend,
-} from "recharts";
+import dynamic from "next/dynamic";
+const WeeklyLineChart = dynamic(() => import("@/components/ui/dashboard-charts").then((mod) => mod.WeeklyLineChart), { ssr: false, loading: () => <Skeleton className="h-[300px] w-full" /> });
+const CategoryPieChart = dynamic(() => import("@/components/ui/dashboard-charts").then((mod) => mod.CategoryPieChart), { ssr: false, loading: () => <Skeleton className="h-[300px] w-full" /> });
+const MonthlyBarChart = dynamic(() => import("@/components/ui/dashboard-charts").then((mod) => mod.MonthlyBarChart), { ssr: false, loading: () => <Skeleton className="h-[300px] w-full" /> });
 import { Leaf, Target, Award, ArrowUp, ArrowDown } from "lucide-react";
 import { fetchApi } from "@/lib/api";
 
-const CHART_COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))"];
-const TOOLTIP_STYLE = { backgroundColor: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "var(--radius)" };
+
 
 /**
  * DashboardPage component showing overall statistics, weekly progress, category pie chart, and monthly bar chart.
@@ -131,16 +130,7 @@ export default function DashboardPage() {
             <CardContent className="pl-2">
               {isLoadingWeekly ? <Skeleton className="h-[300px] w-full" /> : weekly ? (
                 <div className="h-[300px]" role="img" aria-label="Line chart showing daily emissions compared to target. Refer to dashboard values for exact emissions.">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={weekly} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                      <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}kg`} />
-                      <Tooltip contentStyle={TOOLTIP_STYLE} />
-                      <Line type="monotone" dataKey="emissions" name="Emissions" stroke="hsl(var(--primary))" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
-                      <Line type="monotone" dataKey="target" name="Target" stroke="hsl(var(--muted-foreground))" strokeWidth={2} strokeDasharray="5 5" dot={false} />
-                    </LineChart>
-                  </ResponsiveContainer>
+                  <WeeklyLineChart data={weekly} />
                 </div>
               ) : null}
             </CardContent>
@@ -153,15 +143,7 @@ export default function DashboardPage() {
             <CardContent>
               {isLoadingSummary ? <Skeleton className="h-[300px] w-full" /> : summary ? (
                 <div className="h-[300px]" role="img" aria-label="Pie chart showing breakdown of emissions: transport, electricity, food, and shopping.">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={5} dataKey="value">
-                        {pieData.map((_, index) => <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />)}
-                      </Pie>
-                      <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(v) => `${v}kg`} />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <CategoryPieChart data={pieData} />
                 </div>
               ) : null}
             </CardContent>
@@ -177,17 +159,7 @@ export default function DashboardPage() {
             <CardContent className="pl-2">
               {isLoadingMonthly ? <Skeleton className="h-[300px] w-full" /> : (
                 <div className="h-[300px]" role="img" aria-label="Bar chart showing monthly emissions of this year compared to last year.">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={monthly} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                      <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}kg`} />
-                      <Tooltip contentStyle={TOOLTIP_STYLE} />
-                      <Legend />
-                      <Bar dataKey="emissions" name="This Year" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="previousYear" name="Last Year" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} opacity={0.5} />
-                    </BarChart>
-                  </ResponsiveContainer>
+                  <MonthlyBarChart data={monthly} />
                 </div>
               )}
             </CardContent>

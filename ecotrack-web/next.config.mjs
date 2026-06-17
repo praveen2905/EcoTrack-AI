@@ -3,6 +3,9 @@ const nextConfig = {
   turbopack: {
     root: import.meta.dirname,
   },
+  experimental: {
+    optimizePackageImports: ["lucide-react", "recharts", "@radix-ui/react-icons"],
+  },
   headers: async () => [
     {
       source: "/(.*)",

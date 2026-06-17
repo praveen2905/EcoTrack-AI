@@ -13,12 +13,12 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend } from "recharts";
+import dynamic from "next/dynamic";
+const CategoryPieChart = dynamic(() => import("@/components/ui/dashboard-charts").then((mod) => mod.CategoryPieChart), { ssr: false, loading: () => <Skeleton className="h-[280px] w-full" /> });
 import { ArrowRight, TrendingDown } from "lucide-react";
 import { fetchApi } from "@/lib/api";
 
-const CHART_COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))"];
-const TOOLTIP_STYLE = { backgroundColor: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "var(--radius)" };
+
 
 /**
  * ResultsPage component that displays the user's carbon footprint score and details.
@@ -111,15 +111,7 @@ export default function ResultsPage() {
                 <CardHeader><CardTitle>Breakdown</CardTitle><CardDescription>Where your emissions come from</CardDescription></CardHeader>
                 <CardContent>
                   <div className="h-[280px]" role="img" aria-label="Pie chart displaying emission distribution: transport, electricity, food, and shopping. Refer to text table for details.">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie data={pieData} cx="50%" cy="45%" innerRadius={55} outerRadius={85} paddingAngle={2} dataKey="value">
-                          {pieData.map((_, index) => <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />)}
-                        </Pie>
-                        <RechartsTooltip contentStyle={TOOLTIP_STYLE} formatter={(v) => `${Number(v).toFixed(1)}kg`} />
-                        <Legend />
-                      </PieChart>
-                    </ResponsiveContainer>
+                    <CategoryPieChart data={pieData} />
                   </div>
                 </CardContent>
               </Card>
