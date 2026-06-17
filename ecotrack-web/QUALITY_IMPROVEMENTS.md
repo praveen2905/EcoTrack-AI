@@ -38,14 +38,17 @@ This document tracks all improvements made to the codebase across the following 
 - Increased test coverage.
 
 ### 4. Accessibility
-- Improved accessibility using semantic HTML, ARIA labels, roles, keyboard navigation, and screen-reader support.
-- Forms validation with accessible error messages.
+- Fixed semantic HTML by correcting heading hierarchy (e.g., `<h2>` before `<h3>`).
+- Added robust `ARIA labels`, roles (`role="img"`, `role="alert"`), and keyboard navigation across all interactive elements.
+- Fixed specific `aria-label` content mismatch warnings (ensuring the visible text matches the ARIA accessible name).
+- Enforced strict color contrast ratios (e.g., mapping `text-slate-500` to `text-slate-400` on dark backgrounds) for visually impaired users.
+- Ensured all forms have proper validation and accessible error messages.
 
 ### 5. Efficiency
 - Optimized rendering using memoization, `useMemo`, `useCallback`, and `React.memo`.
 - Replaced inefficient patterns to reduce re-renders.
 - Added `Suspense` boundaries, `loading.js`, and `error.js` route handlers.
-- **Bundle Optimization**: Configured `optimizePackageImports` for `lucide-react` and `recharts` in `next.config.mjs` to eliminate massive JavaScript payload bottlenecks.
+- **Bundle Optimization**: Configured `optimizePackageImports` for `lucide-react`, `recharts`, and `date-fns` in `next.config.mjs` to eliminate massive JavaScript payload bottlenecks.
 - **Lazy Loading**: Split heavy rendering components (like Recharts visualizations in Dashboard and Results pages) into separate components (`dashboard-charts.jsx`) and lazy-loaded them using `next/dynamic` to immediately resolve Main Thread blocking time and improve FCP/LCP.
 
 ### 6. Problem Statement Alignment
