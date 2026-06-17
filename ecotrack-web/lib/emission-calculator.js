@@ -87,14 +87,9 @@ export function calculateEmissions(data) {
     0,
     Math.min(
       100,
-      Math.round(100 - (totalEmissions / AVG_MONTHOWORK_KG_OR_AVG_EMISSIONS_KG()) * 50),
+      Math.round(100 - (totalEmissions / AVG_MONTHLY_EMISSIONS_KG) * 50),
     ),
   );
-
-  // Helper function to resolve reference error in score calculation to AVG_MONTHLY_EMISSIONS_KG
-  function AVG_MONTHOWORK_KG_OR_AVG_EMISSIONS_KG() {
-    return AVG_MONTHLY_EMISSIONS_KG;
-  }
 
   return {
     transportEmissions,

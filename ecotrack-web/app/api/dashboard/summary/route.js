@@ -9,6 +9,7 @@ import {
   getAssessments,
   getCompletedChallengeCount,
 } from "@/lib/store";
+import { handleApiError } from "@/lib/api-error";
 
 /**
  * Default fallback values for when no assessment has been taken yet.
@@ -62,9 +63,6 @@ export async function GET() {
       },
     });
   } catch (error) {
-    return NextResponse.json(
-      { error: "An internal server error occurred while retrieving dashboard summary." },
-      { status: 500 }
-    );
+    return handleApiError(error, "An internal server error occurred while retrieving dashboard summary.");
   }
 }

@@ -9,13 +9,18 @@ import { NextResponse } from "next/server";
 import { assessmentSchema } from "@/lib/validations";
 import { calculateEmissions } from "@/lib/emission-calculator";
 import { createAssessment, getAssessments } from "@/lib/store";
+import { handleApiError } from "@/lib/api-error";
 
 /**
  * Retrieve every assessment in reverse-chronological order.
- * @returns {NextResponse} JSON array of assessment objects.
+ * @returns {Promise<NextResponse>} JSON array of assessment objects.
  */
 export async function GET() {
-  return NextResponse.json(getAssessments());
+  try {
+    return NextResponse.json(getAssessments());
+  } catch (error) {
+    return handleApiError(error, "Failed to retrieve assessments.");
+  }
 }
 
 /**
@@ -26,31 +31,32 @@ export async function GET() {
  * details when validation fails.
  *
  * @param {Request} request - Incoming HTTP request with JSON body.
- * @returns {NextResponse} The created assessment (201) or validation errors (400).
+ * @returns {Promise<NextResponse>} The created assessment (201) or validation errors (400).
  */
 export async function POST(request) {
-  let body;
   try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json(
-      { error: "Invalid JSON payload" },
-      { status: 400 },
-    );
-  }
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return handleApiError(new Error("Invalid JSON payload"), "Invalid JSON payload", 400);
+    }
 
-  const result = assessmentSchema.safeParse(body);
-  if (!result.success) {
-    return NextResponse.json(
-      {
-        error: "Validation failed",
-        details: result.error.flatten().fieldErrors,
-      },
-      { status: 400 },
-    );
-  }
+    const result = assessmentSchema.safeParse(body);
+    if (!result.success) {
+      return NextResponse.json(
+        {
+          error: "Validation failed",
+          details: result.error.flatten().fieldErrors,
+        },
+        { status: 400 },
+      );
+    }
 
-  const emissions = calculateEmissions(result.data);
-  const assessment = createAssessment(result.data, emissions);
-  return NextResponse.json(assessment, { status: 201 });
+    const emissions = calculateEmissions(result.data);
+    const assessment = createAssessment(result.data, emissions);
+    return NextResponse.json(assessment, { status: 201 });
+  } catch (error) {
+    return handleApiError(error, "Failed to create assessment.");
+  }
 }

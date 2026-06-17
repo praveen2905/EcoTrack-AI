@@ -8,6 +8,7 @@
 import { NextResponse } from "next/server";
 import { TEMPLATE_RECOMMENDATIONS } from "@/lib/mock-data";
 import { getAssessments } from "@/lib/store";
+import { handleApiError } from "@/lib/api-error";
 
 /** Average transport emissions (kg CO₂/month) used as a comparison baseline. */
 const AVG_TRANSPORT_EMISSIONS = 35;
@@ -20,24 +21,28 @@ const AVG_TRANSPORT_EMISSIONS = 35;
  * recommendation insight is dynamically adjusted to reflect their
  * actual emissions relative to the average.
  *
- * @returns {NextResponse} JSON array of recommendation objects.
+ * @returns {Promise<NextResponse>} JSON array of recommendation objects.
  */
 export async function GET() {
-  const [latest] = getAssessments();
-  const recommendations = latest
-    ? TEMPLATE_RECOMMENDATIONS.map((rec) => {
-        if (rec.id === 1 && latest.transportEmissions) {
-          const difference = Math.round(
-            ((latest.transportEmissions - AVG_TRANSPORT_EMISSIONS) / AVG_TRANSPORT_EMISSIONS) * 100,
-          );
-          return {
-            ...rec,
-            insight: `Your transportation emissions are ${Math.abs(difference)}% ${latest.transportEmissions > AVG_TRANSPORT_EMISSIONS ? "higher" : "lower"} than the average user.`,
-          };
-        }
-        return rec;
-      })
-    : TEMPLATE_RECOMMENDATIONS;
+  try {
+    const [latest] = getAssessments();
+    const recommendations = latest
+      ? TEMPLATE_RECOMMENDATIONS.map((rec) => {
+          if (rec.id === 1 && latest.transportEmissions) {
+            const difference = Math.round(
+              ((latest.transportEmissions - AVG_TRANSPORT_EMISSIONS) / AVG_TRANSPORT_EMISSIONS) * 100,
+            );
+            return {
+              ...rec,
+              insight: `Your transportation emissions are ${Math.abs(difference)}% ${latest.transportEmissions > AVG_TRANSPORT_EMISSIONS ? "higher" : "lower"} than the average user.`,
+            };
+          }
+          return rec;
+        })
+      : TEMPLATE_RECOMMENDATIONS;
 
-  return NextResponse.json(recommendations);
+    return NextResponse.json(recommendations);
+  } catch (error) {
+    return handleApiError(error, "Failed to retrieve recommendations.");
+  }
 }

@@ -6,6 +6,7 @@
 import { NextResponse } from "next/server";
 import { AVAILABLE_BADGES } from "@/lib/mock-data";
 import { getCompletedChallengeCount } from "@/lib/store";
+import { handleApiError } from "@/lib/api-error";
 
 /** Points awarded per completed challenge. */
 const POINTS_PER_CHALLENGE = 10;
@@ -18,24 +19,28 @@ const POINTS_PER_LEVEL = 100;
  * GET /api/profile — Returns the current user's profile including
  * level progression, streak, rank, and earned badges.
  *
- * @returns {NextResponse} JSON profile object.
+ * @returns {Promise<NextResponse>} JSON profile object.
  */
 export async function GET() {
-  const completedCount = getCompletedChallengeCount();
-  const totalPoints = completedCount * POINTS_PER_CHALLENGE + BASE_POINTS;
-  const level = Math.floor(totalPoints / POINTS_PER_LEVEL) + 1;
-  const currentXp = totalPoints % POINTS_PER_LEVEL;
+  try {
+    const completedCount = getCompletedChallengeCount();
+    const totalPoints = completedCount * POINTS_PER_CHALLENGE + BASE_POINTS;
+    const level = Math.floor(totalPoints / POINTS_PER_LEVEL) + 1;
+    const currentXp = totalPoints % POINTS_PER_LEVEL;
 
-  return NextResponse.json({
-    username: "EcoChampion",
-    level,
-    currentXp,
-    xpToNextLevel: POINTS_PER_LEVEL,
-    totalPoints,
-    streak: 7,
-    totalCarbonSaved: 312.5,
-    rank: 3,
-    avatar: "EC",
-    badges: AVAILABLE_BADGES,
-  });
+    return NextResponse.json({
+      username: "EcoChampion",
+      level,
+      currentXp,
+      xpToNextLevel: POINTS_PER_LEVEL,
+      totalPoints,
+      streak: 7,
+      totalCarbonSaved: 312.5,
+      rank: 3,
+      avatar: "EC",
+      badges: AVAILABLE_BADGES,
+    });
+  } catch (error) {
+    return handleApiError(error, "Failed to retrieve profile data.");
+  }
 }

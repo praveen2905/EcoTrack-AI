@@ -5,11 +5,16 @@
 
 import { NextResponse } from "next/server";
 import { getChallenges } from "@/lib/store";
+import { handleApiError } from "@/lib/api-error";
 
 /**
  * GET /api/challenges — Returns all available challenges with their completion status.
- * @returns {NextResponse} JSON array of challenge objects.
+ * @returns {Promise<NextResponse>} JSON array of challenge objects.
  */
 export async function GET() {
-  return NextResponse.json(getChallenges());
+  try {
+    return NextResponse.json(getChallenges());
+  } catch (error) {
+    return handleApiError(error, "Failed to retrieve challenges.");
+  }
 }
